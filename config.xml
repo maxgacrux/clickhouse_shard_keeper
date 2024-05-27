@@ -1,0 +1,12 @@
+<clickhouse>
+    <zookeeper>
+        <node>
+            <host>clickhouse-keeper</host>
+            <port>9181</port>
+            <authentication>
+                <login>${KEEPER_USERNAME}</login>
+                <password>${KEEPER_PASSWORD}</password>
+            </authentication>
+        </node>
+    </zookeeper>
+</clickhouse>

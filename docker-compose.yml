@@ -1,0 +1,58 @@
+version: '3.7'
+services:
+  clickhouse-server-1:
+    container_name: clickhouse-server-1
+    image: clickhouse/clickhouse-server:22.11
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    ulimits:
+      nofile: 262144
+    volumes:
+      - ./config.xml:/etc/clickhouse-server/config.d/clickhouse-keeper-config.xml
+      - ./macros.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./remote_servers.xml:/etc/clickhouse-server/config.d/remote_servers.xml
+    environment:
+      CLICKHOUSE_DB: test
+      CLICKHOUSE_USER: test
+      CLICKHOUSE_PASSWORD: test
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+      KEEPER_USERNAME: test
+      KEEPER_PASSWORD: test
+    depends_on:
+      - clickhouse-keeper
+      
+  clickhouse-server-2:
+    container_name: clickhouse-server-2
+    image: clickhouse/clickhouse-server:22.11
+    ports:
+      - "9001:9000"
+      - "8124:8123"
+    ulimits:
+      nofile: 262144
+    volumes:
+      - ./config.xml:/etc/clickhouse-server/config.d/clickhouse-keeper-config.xml
+      - ./macros.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./remote_servers.xml:/etc/clickhouse-server/config.d/remote_servers.xml
+
+    environment:
+      CLICKHOUSE_DB: test
+      CLICKHOUSE_USER: test
+      CLICKHOUSE_PASSWORD: test
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+
+      KEEPER_USERNAME: test
+      KEEPER_PASSWORD: test
+    depends_on:
+      - clickhouse-keeper
+
+  clickhouse-keeper:
+    container_name: clickhouse-keeper
+    image: clickhouse/clickhouse-keeper:22-alpine
+    ports:
+      - "9181:9181"    
+    volumes:
+      - ./keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    environment:
+      KEEPER_USERNAME: test
+      KEEPER_PASSWORD: test
